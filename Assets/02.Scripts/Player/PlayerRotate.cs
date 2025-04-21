@@ -11,7 +11,6 @@ public class PlayerRotate : MonoBehaviour
     {
         float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");
-        Debug.Log($"Mouse X: {mouseX}, Mouse Y: {mouseY}");
 
         // 회전한 양 만큼 누적시킨다
         _rotationX += mouseX * RotationSpeed * Time.deltaTime;
