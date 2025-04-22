@@ -70,11 +70,6 @@ public class PlayerFire : MonoBehaviour
         UI_Canvas.Instance.UpdateReloadIndicator(_bulletReloadTimer / PlayerWeaponData.BulletReloadTime);
     }
 
-    private void BulletTrace(Vector3 hitPosition)
-    {
-
-    }
-
     private void Bullet()
     {
         if (_bulletCoolTimer >= 0f)
@@ -93,9 +88,9 @@ public class PlayerFire : MonoBehaviour
 
         if (isHit == true)
         {
-            Debug.Log(hitInfo.normal);
             BulletEffect.transform.position = hitInfo.point;
             BulletEffect.transform.forward = hitInfo.normal;
+
             BulletEffect.Play();
         }
 
