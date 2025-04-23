@@ -1407,14 +1407,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 908f86b36cc5e41449f3283dc465920c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FindDistance: 7
-  ReturnDistance: 10
-  MoveSpeed: 4
-  AttackDistance: 2
-  MinMoveDistance: 0.1
-  AttackCooltime: 2
-  MaxHealth: 100
-  DamagedTime: 0.5
+  EnemyData: {fileID: 11400000, guid: e5fa5de5992da4a4bb14caf27dca856a, type: 2}
   CurrentState: 0
 --- !u!1 &1079512456
 GameObject:

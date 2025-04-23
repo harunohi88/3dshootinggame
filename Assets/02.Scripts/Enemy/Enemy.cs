@@ -14,15 +14,7 @@ public class Enemy : MonoBehaviour
         Die
     }
 
-    public float FindDistance = 7f;
-    public float ReturnDistance = 10f;
-    public float MoveSpeed = 3f;
-    public float AttackDistance = 2f;
-    public float MinMoveDistance = 0.1f;
-    public float AttackCooltime = 2f;
-    public float MaxHealth = 100f;
-    public float DamagedTime = 0.5f;
-    public float DieTime = 2f;
+    public EnemyData EnemyData;
 
     private GameObject _player;
     private CharacterController _characterController;
@@ -34,7 +26,7 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
-        _health = MaxHealth;
+        _health = EnemyData.MaxHealth;
         _player = GameObject.FindGameObjectWithTag("Player");
         _characterController = GetComponent<CharacterController>();
         _startPosition = transform.position;
@@ -69,7 +61,7 @@ public class Enemy : MonoBehaviour
 
     private void Idle()
     {
-        if (Vector3.Distance(transform.position, _player.transform.position) < FindDistance)
+        if (Vector3.Distance(transform.position, _player.transform.position) < EnemyData.FindDistance)
         {
             CurrentState = EnemyState.Trace;
             Debug.Log("Transition: Idle -> Trace");
@@ -78,14 +70,14 @@ public class Enemy : MonoBehaviour
 
     private void Trace()
     {
-        if (Vector3.Distance(transform.position, _player.transform.position) > ReturnDistance)
+        if (Vector3.Distance(transform.position, _player.transform.position) > EnemyData.ReturnDistance)
         {
             CurrentState = EnemyState.Return;
             Debug.Log("Transition: Trace -> Return");
             return;
         }
 
-        if (Vector3.Distance(transform.position, _player.transform.position) < AttackDistance)
+        if (Vector3.Distance(transform.position, _player.transform.position) < EnemyData.AttackDistance)
         {
             CurrentState = EnemyState.Attack;
             Debug.Log("Transition: Trace -> Attack");
@@ -93,12 +85,12 @@ public class Enemy : MonoBehaviour
         }
 
         Vector3 direction = (_player.transform.position - transform.position).normalized;
-        _characterController.Move(direction * MoveSpeed * Time.deltaTime);
+        _characterController.Move(direction * EnemyData.MoveSpeed * Time.deltaTime);
     }
 
     private void Return()
     {
-        if (Vector3.Distance(transform.position, _startPosition) < MinMoveDistance)
+        if (Vector3.Distance(transform.position, _startPosition) < EnemyData.MinMoveDistance)
         {
             transform.position = _startPosition;
             CurrentState = EnemyState.Idle;
@@ -106,7 +98,7 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        if (Vector3.Distance(transform.position, _player.transform.position) < FindDistance)
+        if (Vector3.Distance(transform.position, _player.transform.position) < EnemyData.FindDistance)
         {
             CurrentState = EnemyState.Trace;
             Debug.Log("Transition: Return -> Trace");
@@ -115,12 +107,12 @@ public class Enemy : MonoBehaviour
 
         Vector3 direction = (_startPosition - transform.position).normalized;
 
-        _characterController.Move(direction * MoveSpeed * Time.deltaTime);
+        _characterController.Move(direction * EnemyData.MoveSpeed * Time.deltaTime);
     }
 
     private void Attack()
     {
-        if (Vector3.Distance(transform.position, _player.transform.position) > AttackDistance)
+        if (Vector3.Distance(transform.position, _player.transform.position) > EnemyData.AttackDistance)
         {
             CurrentState = EnemyState.Trace;
             _attackTimer = 0f;
@@ -128,7 +120,7 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        if (_attackTimer < AttackCooltime)
+        if (_attackTimer < EnemyData.AttackCooltime)
         {
             _attackTimer += Time.deltaTime;
             return;
@@ -140,14 +132,14 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator Damaged_Coroutine()
     {
-        yield return new WaitForSeconds(DamagedTime);
+        yield return new WaitForSeconds(EnemyData.DamagedTime);
         Debug.Log("Transition: Damaged -> Trace");
         CurrentState = EnemyState.Trace;
     }
 
     private IEnumerator Die_Coroutine()
     {
-        yield return new WaitForSeconds(DieTime);
+        yield return new WaitForSeconds(EnemyData.DieTime);
         gameObject.SetActive(false);
     }
 
