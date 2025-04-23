@@ -10,12 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d0af8270c6016a488094d1a98b72bf9, type: 3}
-  m_Name: PlayerWeaponData
+  m_Name: DefaultRifleData
   m_EditorClassIdentifier: 
-  BombSpeed: 20
-  MaxBombCount: 10
-  MaxBombChargeTime: 3
   MaxBulletCount: 50
   BulletCoolTime: 0.1
   BulletReloadTime: 1
   BulletDamage: 10
+  KnockBackDistance: 2

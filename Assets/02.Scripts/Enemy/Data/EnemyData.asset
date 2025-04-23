@@ -21,3 +21,5 @@ MonoBehaviour:
   MaxHealth: 100
   DamagedTime: 0.5
   DieTime: 2
+  PatrolConversionTime: 3
+  PatrolDistance: 6

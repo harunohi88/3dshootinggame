@@ -12,4 +12,6 @@ public class EnemyData : ScriptableObject
     public float MaxHealth = 100f;
     public float DamagedTime = 0.5f;
     public float DieTime = 2f;
+    public float PatrolConversionTime = 3f;
+    public float PatrolDistance = 6f;
 }

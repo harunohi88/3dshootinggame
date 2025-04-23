@@ -2823,6 +2823,9 @@ MonoBehaviour:
   PlayerWeaponData: {fileID: 11400000, guid: 4ec4ab326f473a24fab8451559f3d549, type: 2}
   FirePosition: {fileID: 1524882937}
   BulletEffect: {fileID: 0}
+  BombSpeed: 15
+  MaxBombCount: 10
+  MaxBombChargeTime: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

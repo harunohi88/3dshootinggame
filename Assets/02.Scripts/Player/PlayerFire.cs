@@ -5,6 +5,10 @@ public class PlayerFire : MonoBehaviour
     public PlayerWeaponData PlayerWeaponData;
     public GameObject FirePosition;
     public ParticleSystem BulletEffect;
+    public float BombSpeed;
+    public int MaxBombCount;
+    public float MaxBombChargeTime;
+
 
     private int _bombCount;
     private float _bombChargeTime;
@@ -17,11 +21,11 @@ public class PlayerFire : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        _bombCount = PlayerWeaponData.MaxBombCount;
+        _bombCount = MaxBombCount;
         _bulletCount = PlayerWeaponData.MaxBulletCount;
         _bulletCoolTimer = 0f;
         _bulletReloadTimer = 0f;
-        UI_Canvas.Instance.UpdateBombCounter(_bombCount, PlayerWeaponData.MaxBombCount);
+        UI_Canvas.Instance.UpdateBombCounter(_bombCount, MaxBombCount);
         UI_Canvas.Instance.UpdateBulletCounter(_bulletCount, PlayerWeaponData.MaxBulletCount);
     }
 
@@ -103,6 +107,8 @@ public class PlayerFire : MonoBehaviour
                 enemy.TakeDamage(new Damage()
                 {
                     Value = PlayerWeaponData.BulletDamage,
+                    KnockBackDistance = PlayerWeaponData.KnockBackDistance,
+                    DamageFrom = gameObject,
                 });
             }
         }
@@ -124,8 +130,8 @@ public class PlayerFire : MonoBehaviour
 
         if (_bombCount <= 0) return;
 
-        _bombChargeTime = Mathf.Clamp(_bombChargeTime, 0, PlayerWeaponData.MaxBombChargeTime);
-        float bombSpeed = PlayerWeaponData.BombSpeed + PlayerWeaponData.BombSpeed * _bombChargeTime;
+        _bombChargeTime = Mathf.Clamp(_bombChargeTime, 0, MaxBombChargeTime);
+        float bombSpeed = BombSpeed + BombSpeed * _bombChargeTime;
 
         GameObject bomb = ObjectPool.Instance.GetBomb();
         if (bomb == null)
@@ -140,6 +146,6 @@ public class PlayerFire : MonoBehaviour
         bombRigidBody.AddTorque(Camera.main.transform.right * bombSpeed, ForceMode.Impulse);
         _bombCount--;
         _bombChargeTime = 0f;
-        UI_Canvas.Instance.UpdateBombCounter(_bombCount, PlayerWeaponData.MaxBombCount);
+        UI_Canvas.Instance.UpdateBombCounter(_bombCount, MaxBombCount);
     }
 }
