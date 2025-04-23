@@ -2,25 +2,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_Canvas : MonoBehaviour
+public class UI_Canvas : Singleton<UI_Canvas>
 {
-    public static UI_Canvas Instance;
     public Slider StaminaSlider;
     public TextMeshProUGUI BombCounter;
     public TextMeshProUGUI BulletCounter;
     public UI_ReloadIndicator ReloadIndicator;
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
 
     private void Start()
     {
