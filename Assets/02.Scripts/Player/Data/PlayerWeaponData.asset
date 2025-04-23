@@ -18,3 +18,4 @@ MonoBehaviour:
   MaxBulletCount: 50
   BulletCoolTime: 0.1
   BulletReloadTime: 1
+  BulletDamage: 10

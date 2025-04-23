@@ -88,10 +88,23 @@ public class PlayerFire : MonoBehaviour
 
         if (isHit == true)
         {
-            BulletEffect.transform.position = hitInfo.point;
-            BulletEffect.transform.forward = hitInfo.normal;
+            GameObject bulletTrace = ObjectPool.Instance.GetBulletTrace();
+            bulletTrace.GetComponent<BulletTrace>().Effect(FirePosition.transform.position, hitInfo.point);
 
-            BulletEffect.Play();
+            GameObject hitEffect = ObjectPool.Instance.GetHitEffect();
+            hitEffect.transform.position = hitInfo.point;
+            hitEffect.transform.forward = hitInfo.normal;
+
+            hitEffect.GetComponent<ParticleSystem>().Play();
+
+            if (hitInfo.collider.CompareTag("Enemy"))
+            {
+                Enemy enemy = hitInfo.collider.GetComponent<Enemy>();
+                enemy.TakeDamage(new Damage()
+                {
+                    Value = PlayerWeaponData.BulletDamage,
+                });
+            }
         }
 
         _bulletCoolTimer = PlayerWeaponData.BulletCoolTime;

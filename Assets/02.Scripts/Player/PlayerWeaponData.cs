@@ -9,4 +9,5 @@ public class PlayerWeaponData : ScriptableObject
     public int MaxBulletCount;
     public float BulletCoolTime;
     public float BulletReloadTime;
+    public int BulletDamage;
 }
