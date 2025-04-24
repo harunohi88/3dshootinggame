@@ -19,8 +19,6 @@ public class PlayerFire : MonoBehaviour
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         _bombCount = MaxBombCount;
         _bulletCount = PlayerWeaponData.MaxBulletCount;
         _bulletCoolTimer = 0f;
