@@ -19,7 +19,7 @@ MonoBehaviour:
   RollTime: 0.5
   RollStamina: 1
   ClimbStamina: 1
-  JumpPower: 5
+  JumpPower: 3
   MaxStamina: 10
   DashStamina: 2.5
   StaminaGainPerSecond: 4

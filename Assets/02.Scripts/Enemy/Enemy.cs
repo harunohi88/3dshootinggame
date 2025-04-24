@@ -3,6 +3,7 @@ using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using UnityEngine.AI;
 
 
 public class Enemy : MonoBehaviour
@@ -22,6 +23,7 @@ public class Enemy : MonoBehaviour
 
     private GameObject _player;
     private CharacterController _characterController;
+    private NavMeshAgent _agent;
     private Vector3 _startPosition;
     private float _attackTimer = 0f;
     private float _health;
@@ -34,10 +36,13 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
+        _player = GameObject.FindGameObjectWithTag("Player");
+        _agent = GetComponent<NavMeshAgent>();
+        _agent.speed = EnemyData.MoveSpeed;
+        _characterController = GetComponent<CharacterController>();
+
         _health = EnemyData.MaxHealth;
         _startPosition = transform.position;
-        _player = GameObject.FindGameObjectWithTag("Player");
-        _characterController = GetComponent<CharacterController>();
         _patrolPoints[0] = transform.position;
         _patrolPoints[1] = transform.position + new Vector3(0f, 0f, EnemyData.PatrolDistance);
         _patrolPoints[2] = transform.position + new Vector3(EnemyData.PatrolDistance, 0f, 0f);
@@ -122,7 +127,8 @@ public class Enemy : MonoBehaviour
         }
 
         Vector3 direction = (_patrolDirection - transform.position).normalized;
-        _characterController.Move(direction * EnemyData.MoveSpeed * Time.deltaTime);
+        //_characterController.Move(direction * EnemyData.MoveSpeed * Time.deltaTime);
+        _agent.SetDestination(_patrolDirection);
     }
 
     private void Trace()
@@ -142,7 +148,8 @@ public class Enemy : MonoBehaviour
         }
 
         Vector3 direction = (_player.transform.position - transform.position).normalized;
-        _characterController.Move(direction * EnemyData.MoveSpeed * Time.deltaTime);
+        //_characterController.Move(direction * EnemyData.MoveSpeed * Time.deltaTime);
+        _agent.SetDestination(_player.transform.position);
     }
 
     private void Return()
@@ -164,7 +171,8 @@ public class Enemy : MonoBehaviour
 
         Vector3 direction = (_startPosition - transform.position).normalized;
 
-        _characterController.Move(direction * EnemyData.MoveSpeed * Time.deltaTime);
+        //_characterController.Move(direction * EnemyData.MoveSpeed * Time.deltaTime);
+        _agent.SetDestination(_startPosition);
     }
 
     private void Attack()
@@ -189,6 +197,8 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator Damaged_Coroutine()
     {
+        _agent.isStopped = true;
+        _agent.ResetPath();
         yield return new WaitForSeconds(EnemyData.DamagedTime);
         Debug.Log("Transition: Damaged -> Trace");
         CurrentState = EnemyState.Trace;
@@ -212,6 +222,9 @@ public class Enemy : MonoBehaviour
         if (_health <= 0f)
         {
             Debug.Log($"Transition: {CurrentState} -> Die");
+            _agent.isStopped = true;
+            _agent.ResetPath();
+            CurrentState = EnemyState.Die;
             StopAllCoroutines();
             StartCoroutine(Die_Coroutine());
             return;
