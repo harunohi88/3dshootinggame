@@ -1,16 +1,24 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamageable
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public PlayerStats PlayerStats;
+
+    [SerializeField] private int _currentHealth;
+
+    private void Start()
     {
-        
+        _currentHealth = PlayerStats.MaxHealth;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TakeDamage(Damage damage)
     {
-        
+        _currentHealth -= damage.Value;
+
+        if (_currentHealth <= 0)
+        {
+            // game over logic
+            Debug.Log("Player is dead");
+        }
     }
 }

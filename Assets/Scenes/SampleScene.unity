@@ -4697,6 +4697,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2111146029}
   - component: {fileID: 2111146028}
+  - component: {fileID: 2111146034}
   - component: {fileID: 2111146030}
   - component: {fileID: 2111146031}
   - component: {fileID: 2111146033}
@@ -4853,6 +4854,19 @@ MonoBehaviour:
   MaxBombCount: 10
   MaxBombChargeTime: 2
   FallbackDistance: 1000
+--- !u!114 &2111146034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2111146025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a8b271886c82184cb2212aedb57635f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerStats: {fileID: 11400000, guid: 59a71eb8b085b9e42a0e9d0c3bd01ddf, type: 2}
 --- !u!1001 &5214082519918124974
 PrefabInstance:
   m_ObjectHideFlags: 0

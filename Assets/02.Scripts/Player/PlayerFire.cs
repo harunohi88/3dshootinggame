@@ -112,8 +112,13 @@ public class PlayerFire : MonoBehaviour
                 });
             }
         }
+        else
+        {
+            GameObject bulletTrace = ObjectPool.Instance.GetObject(EPoolType.BulletTrace);
+            bulletTrace.GetComponent<BulletTrace>().Effect(FirePosition.transform.position, Camera.main.transform.forward * FallbackDistance);
+        }
 
-        _bulletCoolTimer = PlayerWeaponData.BulletCoolTime;
+            _bulletCoolTimer = PlayerWeaponData.BulletCoolTime;
         _bulletCount -= 1;
         UI_Canvas.Instance.UpdateBulletCounter(_bulletCount, PlayerWeaponData.MaxBulletCount);
     }
