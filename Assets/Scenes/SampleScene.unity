@@ -4867,6 +4867,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerStats: {fileID: 11400000, guid: 59a71eb8b085b9e42a0e9d0c3bd01ddf, type: 2}
+  _currentHealth: 0
 --- !u!1001 &5214082519918124974
 PrefabInstance:
   m_ObjectHideFlags: 0
