@@ -10,13 +10,11 @@ public class PlayerRotate : MonoBehaviour
     void Update()
     {
         float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
 
         _rotationX += mouseX * RotationSpeed * Time.deltaTime;
-        _rotationY += -1f * mouseY * RotationSpeed * Time.deltaTime;
 
         _rotationY = Mathf.Clamp(_rotationY, -90f, 90f);
 
-        transform.eulerAngles = new Vector3(_rotationY, _rotationX, 0);
+        transform.eulerAngles = new Vector3(0, _rotationX, 0);
     }
 }

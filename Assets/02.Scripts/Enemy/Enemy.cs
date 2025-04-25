@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 using UnityEngine.AI;
 
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IDamageable
 {
     public enum EnemyState
     {
@@ -38,14 +38,22 @@ public class Enemy : MonoBehaviour
     {
         _player = GameObject.FindGameObjectWithTag("Player");
         _agent = GetComponent<NavMeshAgent>();
-        _agent.speed = EnemyData.MoveSpeed;
         _characterController = GetComponent<CharacterController>();
 
+        InitEnemy();
+    }
+
+    private void InitEnemy()
+    {
+        _agent.speed = EnemyData.MoveSpeed;
         _health = EnemyData.MaxHealth;
         _startPosition = transform.position;
         _patrolPoints[0] = transform.position;
         _patrolPoints[1] = transform.position + new Vector3(0f, 0f, EnemyData.PatrolDistance);
         _patrolPoints[2] = transform.position + new Vector3(EnemyData.PatrolDistance, 0f, 0f);
+        CurrentState = EnemyState.Idle;
+        _agent.ResetPath();
+        _agent.isStopped = false;
     }
 
     private void Update()
@@ -84,7 +92,10 @@ public class Enemy : MonoBehaviour
     {
         if (Vector3.Distance(transform.position, _player.transform.position) < EnemyData.FindDistance)
         {
-            StopCoroutine(_waitPatrolCoroutine);
+            if (_waitPatrolCoroutine != null)
+            {
+                StopCoroutine(_waitPatrolCoroutine);
+            }
             _waitPatrolCoroutine = null;
             CurrentState = EnemyState.Trace;
             Debug.Log("Transition: Idle -> Trace");
@@ -207,6 +218,7 @@ public class Enemy : MonoBehaviour
     private IEnumerator Die_Coroutine()
     {
         yield return new WaitForSeconds(EnemyData.DieTime);
+        InitEnemy();
         gameObject.SetActive(false);
     }
 
@@ -219,6 +231,11 @@ public class Enemy : MonoBehaviour
 
         _health -= damage.Value;
 
+        CurrentState = EnemyState.Damaged;
+
+        Vector3 direction = (transform.position - damage.DamageFrom.transform.position).normalized;
+        _characterController.Move(direction * damage.KnockBackDistance);
+
         if (_health <= 0f)
         {
             Debug.Log($"Transition: {CurrentState} -> Die");
@@ -229,11 +246,6 @@ public class Enemy : MonoBehaviour
             StartCoroutine(Die_Coroutine());
             return;
         }
-
-        CurrentState = EnemyState.Damaged;
-
-        Vector3 direction = (transform.position - damage.DamageFrom.transform.position).normalized;
-        _characterController.Move(direction * damage.KnockBackDistance);
 
         StartCoroutine(Damaged_Coroutine());
 

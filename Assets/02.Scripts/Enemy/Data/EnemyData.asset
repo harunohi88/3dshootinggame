@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db9a69e1bae06534fa6278439efadaec, type: 3}
   m_Name: EnemyData
   m_EditorClassIdentifier: 
-  FindDistance: 15
-  ReturnDistance: 18
+  FindDistance: 1000
+  ReturnDistance: 1000
   MoveSpeed: 3
   AttackDistance: 2
   MinMoveDistance: 0.1

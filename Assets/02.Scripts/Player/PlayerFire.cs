@@ -1,13 +1,14 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerFire : MonoBehaviour
 {
     public PlayerWeaponData PlayerWeaponData;
     public GameObject FirePosition;
-    public ParticleSystem BulletEffect;
     public float BombSpeed;
     public int MaxBombCount;
     public float MaxBombChargeTime;
+    public float FallbackDistance;
 
 
     private int _bombCount;
@@ -90,19 +91,20 @@ public class PlayerFire : MonoBehaviour
 
         if (isHit == true)
         {
-            GameObject bulletTrace = ObjectPool.Instance.GetBulletTrace();
+            GameObject bulletTrace = ObjectPool.Instance.GetObject(EPoolType.BulletTrace);
             bulletTrace.GetComponent<BulletTrace>().Effect(FirePosition.transform.position, hitInfo.point);
 
-            GameObject hitEffect = ObjectPool.Instance.GetHitEffect();
+            GameObject hitEffect = ObjectPool.Instance.GetObject(EPoolType.HitEffect);
             hitEffect.transform.position = hitInfo.point;
             hitEffect.transform.forward = hitInfo.normal;
 
             hitEffect.GetComponent<ParticleSystem>().Play();
 
-            if (hitInfo.collider.CompareTag("Enemy"))
+            IDamageable hit = hitInfo.collider.GetComponent<IDamageable>();
+
+            if (hit != null)
             {
-                Enemy enemy = hitInfo.collider.GetComponent<Enemy>();
-                enemy.TakeDamage(new Damage()
+                hit.TakeDamage(new Damage()
                 {
                     Value = PlayerWeaponData.BulletDamage,
                     KnockBackDistance = PlayerWeaponData.KnockBackDistance,
@@ -131,16 +133,34 @@ public class PlayerFire : MonoBehaviour
         _bombChargeTime = Mathf.Clamp(_bombChargeTime, 0, MaxBombChargeTime);
         float bombSpeed = BombSpeed + BombSpeed * _bombChargeTime;
 
-        GameObject bomb = ObjectPool.Instance.GetBomb();
+        GameObject bomb = ObjectPool.Instance.GetObject(EPoolType.Bomb);
         if (bomb == null)
         {
             _bombChargeTime = 0f;
             return;
         }
+
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        RaycastHit hitInfo = new RaycastHit();
+        bool isHit = Physics.Raycast(ray, out hitInfo);
+        Vector3 direction = new Vector3();
+
+        if (isHit == true)
+        {
+            direction = hitInfo.point - FirePosition.transform.position;
+            direction.Normalize();
+        }
+        else
+        {
+            direction = Camera.main.transform.forward * FallbackDistance - FirePosition.transform.position;
+            direction.Normalize();
+        }
+
+
         bomb.transform.position = FirePosition.transform.position;
         bomb.transform.rotation = FirePosition.transform.rotation;
         Rigidbody bombRigidBody = bomb.GetComponent<Rigidbody>();
-        bombRigidBody.AddForce(Camera.main.transform.forward * bombSpeed, ForceMode.Impulse);
+        bombRigidBody.AddForce(direction * bombSpeed, ForceMode.Impulse);
         bombRigidBody.AddTorque(Camera.main.transform.right * bombSpeed, ForceMode.Impulse);
         _bombCount--;
         _bombChargeTime = 0f;

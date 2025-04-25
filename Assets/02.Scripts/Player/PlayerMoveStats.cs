@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "PlayerData", menuName = "Scriptable Objects/PlayerData")]
-public class PlayerData : ScriptableObject
+[CreateAssetMenu(fileName = "PlayerMoveStats", menuName = "Scriptable Objects/PlayerMoveStats")]
+public class PlayerMoveStats : ScriptableObject
 {
     public float OriginalSpeed;
     public float DashSpeed;

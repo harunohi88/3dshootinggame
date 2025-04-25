@@ -13,8 +13,9 @@ public class Bomb : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        GameObject VFXObject = Instantiate(ExplosionVFXPrefab);
-        VFXObject.transform.position = transform.position;
+        GameObject bombEffect = ObjectPool.Instance.GetObject(EPoolType.BombEffect);
+        bombEffect.transform.position = transform.position;
+
         _rigidbody.angularVelocity = Vector3.zero;
         _rigidbody.linearVelocity = Vector3.zero;
 

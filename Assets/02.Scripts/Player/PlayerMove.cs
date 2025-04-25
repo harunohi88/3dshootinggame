@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
-    public PlayerData PlayerData;
+    public PlayerMoveStats PlayerMoveStats;
     public LayerMask WallLayer;
 
     private CharacterController _characterController;
@@ -29,9 +29,9 @@ public class PlayerMove : MonoBehaviour
 
     private void Start()
     {
-        _speed = PlayerData.OriginalSpeed;
-        _stamina = PlayerData.MaxStamina;
-        UI_Canvas.Instance.UpdateStamina(_stamina / PlayerData.MaxStamina);
+        _speed = PlayerMoveStats.OriginalSpeed;
+        _stamina = PlayerMoveStats.MaxStamina;
+        UI_Canvas.Instance.UpdateStamina(_stamina / PlayerMoveStats.MaxStamina);
     }
 
     private void Update()
@@ -60,7 +60,7 @@ public class PlayerMove : MonoBehaviour
         Vector3 origin = transform.position + Vector3.up;
         Vector3 direction = transform.forward;
 
-        return Physics.Raycast(origin, direction, out _wallHit, PlayerData.WallCheckDistance, WallLayer);
+        return Physics.Raycast(origin, direction, out _wallHit, PlayerMoveStats.WallCheckDistance, WallLayer);
     }
 
     private void CheckClimbStart()
@@ -94,10 +94,10 @@ public class PlayerMove : MonoBehaviour
         Vector3 climbDir = Vector3.up + climbAlongWall;
         climbDir.Normalize();
 
-        Vector3 move = climbDir * PlayerData.ClimbSpeed;
+        Vector3 move = climbDir * PlayerMoveStats.ClimbSpeed;
 
-        _stamina -= PlayerData.ClimbStamina * Time.deltaTime;
-        UI_Canvas.Instance.UpdateStamina(_stamina / PlayerData.MaxStamina);
+        _stamina -= PlayerMoveStats.ClimbStamina * Time.deltaTime;
+        UI_Canvas.Instance.UpdateStamina(_stamina / PlayerMoveStats.MaxStamina);
 
         _characterController.Move(move * Time.deltaTime);
     }
@@ -107,13 +107,13 @@ public class PlayerMove : MonoBehaviour
     {
         if (_characterController.isGrounded && Input.GetButtonDown("Roll") && _isRolling == false)
         {
-            if (_stamina < PlayerData.RollStamina) return;
+            if (_stamina < PlayerMoveStats.RollStamina) return;
 
-            _stamina -= PlayerData.RollStamina;
+            _stamina -= PlayerMoveStats.RollStamina;
             _isRolling = true;
-            _speed = PlayerData.RollSpeed;
+            _speed = PlayerMoveStats.RollSpeed;
             _rollDirection = _moveDirection;
-            UI_Canvas.Instance.UpdateStamina(_stamina / PlayerData.MaxStamina);
+            UI_Canvas.Instance.UpdateStamina(_stamina / PlayerMoveStats.MaxStamina);
         }
 
         if (_isRolling == false) return;
@@ -123,11 +123,11 @@ public class PlayerMove : MonoBehaviour
         _rollTimer += Time.deltaTime;
         _characterController.Move(_rollDirection * _speed * Time.deltaTime);
 
-        if (_rollTimer >= PlayerData.RollTime)
+        if (_rollTimer >= PlayerMoveStats.RollTime)
         {
             _isRolling = false;
             _rollTimer = 0f;
-            _speed = PlayerData.OriginalSpeed;
+            _speed = PlayerMoveStats.OriginalSpeed;
             _rollDirection = Vector3.zero;
         }
     }
@@ -163,12 +163,12 @@ public class PlayerMove : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump") && _isJumping == false)
         {
-            _yVelocity = PlayerData.JumpPower;
+            _yVelocity = PlayerMoveStats.JumpPower;
             _isJumping = true;
         }
         else if (Input.GetButtonDown("Jump") && _isDoubleJumping == false)
         {
-            _yVelocity = PlayerData.JumpPower;
+            _yVelocity = PlayerMoveStats.JumpPower;
             _isDoubleJumping = true;
         }
     }
@@ -177,20 +177,20 @@ public class PlayerMove : MonoBehaviour
     {
         if (Input.GetButton("Dash") == true)
         {
-            _stamina -= PlayerData.DashStamina * Time.deltaTime;
+            _stamina -= PlayerMoveStats.DashStamina * Time.deltaTime;
             if (_stamina <= 0)
             {
-                _speed = PlayerData.OriginalSpeed;
+                _speed = PlayerMoveStats.OriginalSpeed;
                 _isUsingStamina = false;
                 return;
             }
-            _speed = PlayerData.DashSpeed;
+            _speed = PlayerMoveStats.DashSpeed;
             _isUsingStamina = true;
-            UI_Canvas.Instance.UpdateStamina(_stamina / PlayerData.MaxStamina);
+            UI_Canvas.Instance.UpdateStamina(_stamina / PlayerMoveStats.MaxStamina);
         }
         else
         {
-            _speed = PlayerData.OriginalSpeed;
+            _speed = PlayerMoveStats.OriginalSpeed;
             _isUsingStamina = false;
         }
     }
@@ -199,8 +199,8 @@ public class PlayerMove : MonoBehaviour
     {
         if (_isUsingStamina == true) return;
 
-        _stamina += PlayerData.StaminaGainPerSecond * Time.deltaTime;
-        _stamina = Mathf.Clamp(_stamina, 0, PlayerData.MaxStamina);
-        UI_Canvas.Instance.UpdateStamina(_stamina / PlayerData.MaxStamina);
+        _stamina += PlayerMoveStats.StaminaGainPerSecond * Time.deltaTime;
+        _stamina = Mathf.Clamp(_stamina, 0, PlayerMoveStats.MaxStamina);
+        UI_Canvas.Instance.UpdateStamina(_stamina / PlayerMoveStats.MaxStamina);
     }
 }

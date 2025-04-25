@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce373d4b766149f49927c97909bb2c3b, type: 3}
+  m_Name: BulletTrace
+  m_EditorClassIdentifier: 
+  PoolType: 2
+  PoolSize: 20
+  Prefab: {fileID: 5067302429905341319, guid: 69453f0c0326407459785674f024c7ff, type: 3}

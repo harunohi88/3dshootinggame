@@ -9,18 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56574a98ee5e1e848bde67b330daf45d, type: 3}
-  m_Name: PlayerData
+  m_Script: {fileID: 11500000, guid: 41c05134eddda5e4ca3cbdcb966060f4, type: 3}
+  m_Name: PlayerMoveStats
   m_EditorClassIdentifier: 
   OriginalSpeed: 7
   DashSpeed: 12
   RollSpeed: 20
   ClimbSpeed: 5
-  RollTime: 0.5
-  RollStamina: 1
-  ClimbStamina: 1
+  RollTime: 0.3
+  RollStamina: 3
+  ClimbStamina: 2
   JumpPower: 3
   MaxStamina: 10
-  DashStamina: 2.5
-  StaminaGainPerSecond: 4
+  DashStamina: 2
+  StaminaGainPerSecond: 3
   WallCheckDistance: 1.5
