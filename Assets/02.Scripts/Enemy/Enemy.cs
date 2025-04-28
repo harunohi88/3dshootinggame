@@ -21,7 +21,9 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public EnemyData EnemyData;
 
+    private Animator _animator;
     private GameObject _player;
+    private UI_EnemyHealthBar _healthBar;
     private CharacterController _characterController;
     private NavMeshAgent _agent;
     private Vector3 _startPosition;
@@ -36,14 +38,16 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        _animator = GetComponentInChildren<Animator>();
         _player = GameObject.FindGameObjectWithTag("Player");
         _agent = GetComponent<NavMeshAgent>();
         _characterController = GetComponent<CharacterController>();
+        _healthBar = GetComponentInChildren<UI_EnemyHealthBar>();
 
-        InitEnemy();
+        ResetEnemy();
     }
 
-    private void InitEnemy()
+    private void ResetEnemy()
     {
         _agent.speed = EnemyData.MoveSpeed;
         _health = EnemyData.MaxHealth;
@@ -98,6 +102,7 @@ public class Enemy : MonoBehaviour, IDamageable
             }
             _waitPatrolCoroutine = null;
             CurrentState = EnemyState.Trace;
+            _animator.SetTrigger("IdleToMove");
             Debug.Log("Transition: Idle -> Trace");
             return;
         }
@@ -154,6 +159,7 @@ public class Enemy : MonoBehaviour, IDamageable
         if (Vector3.Distance(transform.position, _player.transform.position) < EnemyData.AttackDistance)
         {
             CurrentState = EnemyState.Attack;
+            _animator.SetTrigger("MoveToAttackDelay");
             Debug.Log("Transition: Trace -> Attack");
             return;
         }
@@ -169,6 +175,7 @@ public class Enemy : MonoBehaviour, IDamageable
         {
             transform.position = _startPosition;
             CurrentState = EnemyState.Idle;
+            _animator.SetTrigger("MoveToIdle");
             Debug.Log("Transition: Return -> Idle");
             return;
         }
@@ -192,6 +199,7 @@ public class Enemy : MonoBehaviour, IDamageable
         {
             CurrentState = EnemyState.Trace;
             _attackTimer = 0f;
+            _animator.SetTrigger("AttackDelayToMove");
             Debug.Log("Transition: Attack -> Trace");
             return;
         }
@@ -203,7 +211,17 @@ public class Enemy : MonoBehaviour, IDamageable
         }
 
         _attackTimer = 0f;
-        Debug.Log("Attack");
+        _animator.SetTrigger("AttackDelayToAttack");
+    }
+
+    public void AttackEvent()
+    {
+        _player.GetComponent<IDamageable>().TakeDamage(new Damage()
+        {
+            Value = EnemyData.AttackDamage,
+            KnockBackDistance = 0f,
+            DamageFrom = gameObject,
+        });
     }
 
     private IEnumerator Damaged_Coroutine()
@@ -218,7 +236,8 @@ public class Enemy : MonoBehaviour, IDamageable
     private IEnumerator Die_Coroutine()
     {
         yield return new WaitForSeconds(EnemyData.DieTime);
-        InitEnemy();
+        ResetEnemy();
+        _healthBar.Release();
         gameObject.SetActive(false);
     }
 
@@ -230,11 +249,12 @@ public class Enemy : MonoBehaviour, IDamageable
         }
 
         _health -= damage.Value;
+        _healthBar.UpdateHealth(_health, EnemyData.MaxHealth);
 
         CurrentState = EnemyState.Damaged;
 
-        Vector3 direction = (transform.position - damage.DamageFrom.transform.position).normalized;
-        _characterController.Move(direction * damage.KnockBackDistance);
+        //Vector3 direction = (transform.position - damage.DamageFrom.transform.position).normalized;
+        //_characterController.Move(direction * damage.KnockBackDistance);
 
         if (_health <= 0f)
         {
@@ -243,10 +263,12 @@ public class Enemy : MonoBehaviour, IDamageable
             _agent.ResetPath();
             CurrentState = EnemyState.Die;
             StopAllCoroutines();
+            _animator.SetTrigger("Die");
             StartCoroutine(Die_Coroutine());
             return;
         }
 
+        _animator.SetTrigger("Damaged");
         StartCoroutine(Damaged_Coroutine());
 
     }

@@ -6,6 +6,7 @@ public class EnemyData : ScriptableObject
     public float FindDistance = 7f;
     public float ReturnDistance = 10f;
     public float MoveSpeed = 3f;
+    public int AttackDamage = 20;
     public float AttackDistance = 2f;
     public float MinMoveDistance = 0.1f;
     public float AttackCooltime = 2f;

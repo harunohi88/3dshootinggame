@@ -15,7 +15,8 @@ MonoBehaviour:
   FindDistance: 1000
   ReturnDistance: 1000
   MoveSpeed: 3
-  AttackDistance: 2
+  AttackDamage: 20
+  AttackDistance: 2.5
   MinMoveDistance: 0.1
   AttackCooltime: 2
   MaxHealth: 100

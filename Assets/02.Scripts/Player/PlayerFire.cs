@@ -11,6 +11,7 @@ public class PlayerFire : MonoBehaviour
     public float FallbackDistance;
 
 
+    private Animator _animator;
     private int _bombCount;
     private float _bombChargeTime;
     private int _bulletCount;
@@ -20,12 +21,13 @@ public class PlayerFire : MonoBehaviour
 
     private void Start()
     {
+        _animator = GetComponentInChildren<Animator>();
         _bombCount = MaxBombCount;
         _bulletCount = PlayerWeaponData.MaxBulletCount;
         _bulletCoolTimer = 0f;
         _bulletReloadTimer = 0f;
-        UI_Canvas.Instance.UpdateBombCounter(_bombCount, MaxBombCount);
-        UI_Canvas.Instance.UpdateBulletCounter(_bulletCount, PlayerWeaponData.MaxBulletCount);
+        UI_HUD.Instance.UpdateBombCounter(_bombCount, MaxBombCount);
+        UI_HUD.Instance.UpdateBulletCounter(_bulletCount, PlayerWeaponData.MaxBulletCount);
     }
 
     private void Update()
@@ -42,7 +44,7 @@ public class PlayerFire : MonoBehaviour
         {
             if (_isReloading == false)
             {
-                UI_Canvas.Instance.ReloadIndicator.gameObject.SetActive(true);
+                UI_HUD.Instance.ReloadIndicator.gameObject.SetActive(true);
             }
             Debug.Log("Reload");
             _isReloading = true;
@@ -54,8 +56,8 @@ public class PlayerFire : MonoBehaviour
         {
             _isReloading = false;
             _bulletReloadTimer = 0f;
-            UI_Canvas.Instance.ReloadIndicator.gameObject.SetActive(false);
-            UI_Canvas.Instance.UpdateReloadIndicator(_bulletReloadTimer);
+            UI_HUD.Instance.ReloadIndicator.gameObject.SetActive(false);
+            UI_HUD.Instance.UpdateReloadIndicator(_bulletReloadTimer);
             return;
         }
 
@@ -64,13 +66,13 @@ public class PlayerFire : MonoBehaviour
             _isReloading = false;
             _bulletCount = PlayerWeaponData.MaxBulletCount;
             _bulletReloadTimer = 0f;
-            UI_Canvas.Instance.ReloadIndicator.gameObject.SetActive(false);
-            UI_Canvas.Instance.UpdateReloadIndicator(_bulletReloadTimer);
-            UI_Canvas.Instance.UpdateBulletCounter(_bulletCount, PlayerWeaponData.MaxBulletCount);
+            UI_HUD.Instance.ReloadIndicator.gameObject.SetActive(false);
+            UI_HUD.Instance.UpdateReloadIndicator(_bulletReloadTimer);
+            UI_HUD.Instance.UpdateBulletCounter(_bulletCount, PlayerWeaponData.MaxBulletCount);
             return;
         }
         _bulletReloadTimer += Time.deltaTime;
-        UI_Canvas.Instance.UpdateReloadIndicator(_bulletReloadTimer / PlayerWeaponData.BulletReloadTime);
+        UI_HUD.Instance.UpdateReloadIndicator(_bulletReloadTimer / PlayerWeaponData.BulletReloadTime);
     }
 
     private void Bullet()
@@ -86,6 +88,7 @@ public class PlayerFire : MonoBehaviour
 
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         RaycastHit hitInfo = new RaycastHit();
+        _animator.SetTrigger("Shoot");
 
         bool isHit = Physics.Raycast(ray, out hitInfo);
 
@@ -118,9 +121,9 @@ public class PlayerFire : MonoBehaviour
             bulletTrace.GetComponent<BulletTrace>().Effect(FirePosition.transform.position, Camera.main.transform.forward * FallbackDistance);
         }
 
-            _bulletCoolTimer = PlayerWeaponData.BulletCoolTime;
+        _bulletCoolTimer = PlayerWeaponData.BulletCoolTime;
         _bulletCount -= 1;
-        UI_Canvas.Instance.UpdateBulletCounter(_bulletCount, PlayerWeaponData.MaxBulletCount);
+        UI_HUD.Instance.UpdateBulletCounter(_bulletCount, PlayerWeaponData.MaxBulletCount);
     }
 
     private void BombCharge()
@@ -169,6 +172,6 @@ public class PlayerFire : MonoBehaviour
         bombRigidBody.AddTorque(Camera.main.transform.right * bombSpeed, ForceMode.Impulse);
         _bombCount--;
         _bombChargeTime = 0f;
-        UI_Canvas.Instance.UpdateBombCounter(_bombCount, MaxBombCount);
+        UI_HUD.Instance.UpdateBombCounter(_bombCount, MaxBombCount);
     }
 }

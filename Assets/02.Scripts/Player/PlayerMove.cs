@@ -7,6 +7,7 @@ public class PlayerMove : MonoBehaviour
     public LayerMask WallLayer;
 
     private CharacterController _characterController;
+    private Animator _animator;
     private Vector3 _moveDirection;
     private Vector3 _rollDirection;
     private float _yVelocity = 0f;
@@ -25,13 +26,14 @@ public class PlayerMove : MonoBehaviour
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
+        _animator = GetComponentInChildren<Animator>();
     }
 
     private void Start()
     {
         _speed = PlayerMoveStats.OriginalSpeed;
         _stamina = PlayerMoveStats.MaxStamina;
-        UI_Canvas.Instance.UpdateStamina(_stamina / PlayerMoveStats.MaxStamina);
+        UI_HUD.Instance.UpdateStamina(_stamina / PlayerMoveStats.MaxStamina);
     }
 
     private void Update()
@@ -97,7 +99,7 @@ public class PlayerMove : MonoBehaviour
         Vector3 move = climbDir * PlayerMoveStats.ClimbSpeed;
 
         _stamina -= PlayerMoveStats.ClimbStamina * Time.deltaTime;
-        UI_Canvas.Instance.UpdateStamina(_stamina / PlayerMoveStats.MaxStamina);
+        UI_HUD.Instance.UpdateStamina(_stamina / PlayerMoveStats.MaxStamina);
 
         _characterController.Move(move * Time.deltaTime);
     }
@@ -113,7 +115,7 @@ public class PlayerMove : MonoBehaviour
             _isRolling = true;
             _speed = PlayerMoveStats.RollSpeed;
             _rollDirection = _moveDirection;
-            UI_Canvas.Instance.UpdateStamina(_stamina / PlayerMoveStats.MaxStamina);
+            UI_HUD.Instance.UpdateStamina(_stamina / PlayerMoveStats.MaxStamina);
         }
 
         if (_isRolling == false) return;
@@ -138,7 +140,11 @@ public class PlayerMove : MonoBehaviour
         float v = Input.GetAxis("Vertical");
 
         _moveDirection = new Vector3(h, 0, v);
+
+        _animator.SetFloat("MoveAmount", _moveDirection.magnitude);
+
         _moveDirection.Normalize();
+
 
         _moveDirection = Camera.main.transform.TransformDirection(_moveDirection);
     }
@@ -186,7 +192,7 @@ public class PlayerMove : MonoBehaviour
             }
             _speed = PlayerMoveStats.DashSpeed;
             _isUsingStamina = true;
-            UI_Canvas.Instance.UpdateStamina(_stamina / PlayerMoveStats.MaxStamina);
+            UI_HUD.Instance.UpdateStamina(_stamina / PlayerMoveStats.MaxStamina);
         }
         else
         {
@@ -201,6 +207,6 @@ public class PlayerMove : MonoBehaviour
 
         _stamina += PlayerMoveStats.StaminaGainPerSecond * Time.deltaTime;
         _stamina = Mathf.Clamp(_stamina, 0, PlayerMoveStats.MaxStamina);
-        UI_Canvas.Instance.UpdateStamina(_stamina / PlayerMoveStats.MaxStamina);
+        UI_HUD.Instance.UpdateStamina(_stamina / PlayerMoveStats.MaxStamina);
     }
 }

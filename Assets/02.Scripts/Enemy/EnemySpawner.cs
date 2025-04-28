@@ -22,6 +22,7 @@ public class EnemySpawner : MonoBehaviour
         }
 
         GameObject enemy = ObjectPool.Instance.GetObject(EPoolType.Enemy);
+
         if (enemy == null) return;
 
         Vector3 spawnPosition = new Vector3(
