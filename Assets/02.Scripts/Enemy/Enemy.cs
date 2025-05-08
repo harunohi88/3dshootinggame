@@ -39,12 +39,19 @@ public class Enemy : MonoBehaviour, IDamageable
     private void Start()
     {
         _animator = GetComponentInChildren<Animator>();
-        _player = GameObject.FindGameObjectWithTag("Player");
         _agent = GetComponent<NavMeshAgent>();
         _characterController = GetComponent<CharacterController>();
         _healthBar = GetComponentInChildren<UI_EnemyHealthBar>();
 
         ResetEnemy();
+    }
+
+    private void OnEnable()
+    {
+        if (_player == null)
+        {
+            _player = GameObject.FindGameObjectWithTag("Player");
+        }
     }
 
     private void ResetEnemy()
