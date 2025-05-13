@@ -13,7 +13,6 @@ public class GameManager : Singleton<GameManager>
     {
         if (GameState != EGameState.Pause)
         {
-            Debug.Log("Open Option Popup");
             GameState = EGameState.Pause;
             Time.timeScale = 0f;
             PopupManager.Instance.Open(EPopupName.Option, closeCallBack: Continue);
